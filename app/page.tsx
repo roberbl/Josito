@@ -1,2 +1,3 @@
 import { RoundBoard } from '@/components/round-board';
-export default function Home(){return <RoundBoard/>}
+import { requireUser } from '@/lib/auth';
+export default async function Home(){const {profile}=await requireUser();return <RoundBoard profile={profile}/>}

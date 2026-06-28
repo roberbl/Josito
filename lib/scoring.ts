@@ -23,7 +23,8 @@ export function calculateRoundScores(params:{matches:Match[];predictions:Predict
     }
     const raw=regular+plenoPoints;
     const total=prediction.is_default ? raw/2 : raw;
-    return {participant_id:participant.id,regular_points:regular,pleno_points:plenoPoints,total_points:total,segunda_hits:segunda,away_hits:away,draw_hits:draw,is_default:prediction.is_default,eliminated:prediction.is_default,saved_by_copita:false,rank:0} satisfies RoundScore;
+    const score: RoundScore = {participant_id:participant.id,regular_points:regular,pleno_points:plenoPoints,total_points:total,segunda_hits:segunda,away_hits:away,draw_hits:draw,is_default:prediction.is_default,eliminated:prediction.is_default,saved_by_copita:false,rank:0};
+    return score;
   });
   rows.sort((a,b)=> b.total_points-a.total_points || b.segunda_hits-a.segunda_hits || b.away_hits-a.away_hits || b.draw_hits-a.draw_hits || copitaTie(a,b,params.previousCopitaId) || ((params.manualOrder?.[a.participant_id]??999)-(params.manualOrder?.[b.participant_id]??999)) || a.participant_id.localeCompare(b.participant_id));
   rows.forEach((r,i)=>r.rank=i+1);
