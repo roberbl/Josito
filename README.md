@@ -97,3 +97,12 @@ Después vuelve a iniciar sesión. El menú mostrará el panel de administració
 - Solo usuarios `active` pueden enviar pronósticos.
 - Después del cierre se pueden marcar pronósticos como públicos mediante `closed = true`.
 - Las acciones críticas de admin quedan modeladas en `auditLogs`.
+
+## Solución a “API key not valid”
+
+Ese error aparece cuando `NEXT_PUBLIC_FIREBASE_API_KEY` no está configurada, sigue con el valor de ejemplo o no corresponde al proyecto Firebase usado. Para corregirlo:
+
+1. Abre Firebase Console > Project settings > General > Your apps > Web app.
+2. Copia `apiKey`, `authDomain`, `projectId`, `storageBucket`, `messagingSenderId` y `appId` en `.env.local` usando los nombres `NEXT_PUBLIC_FIREBASE_*`.
+3. Reinicia el servidor local con `npm run dev`; Next.js no recarga variables de entorno ya arrancadas.
+4. Comprueba que Email/Password está activado en Authentication > Sign-in method.
