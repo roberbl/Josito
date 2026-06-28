@@ -1,0 +1,51 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function userDoc(uid) { return get(/databases/$(database)/documents/users/$(uid)); }
+    function isAdmin() { return signedIn() && userDoc(request.auth.uid).data.role == 'admin'; }
+    function isActive() { return signedIn() && userDoc(request.auth.uid).data.participantStatus == 'active'; }
+    function isOwner(uid) { return signedIn() && request.auth.uid == uid; }
+
+    match /users/{uid} {
+      allow create: if isOwner(uid)
+        && request.resource.data.role == 'participant'
+        && request.resource.data.participantStatus == 'pending';
+      allow read: if isOwner(uid) || isAdmin();
+      allow update: if isAdmin() || (isOwner(uid)
+        && request.resource.data.diff(resource.data).changedKeys().hasOnly(['displayName', 'updatedAt'])
+        && request.resource.data.role == resource.data.role
+        && request.resource.data.participantStatus == resource.data.participantStatus
+        && request.resource.data.teamId == resource.data.teamId);
+      allow delete: if isAdmin();
+    }
+
+    match /teams/{teamId} { allow read: if signedIn(); allow write: if isAdmin(); }
+    match /rounds/{roundId} { allow read: if signedIn(); allow write: if isAdmin(); }
+    match /rounds/{roundId}/matches/{matchId} { allow read: if signedIn(); allow write: if isAdmin(); }
+    match /matches/{matchId} { allow read: if signedIn(); allow write: if isAdmin(); }
+
+    match /predictions/{predictionId} {
+      allow read: if isAdmin() || resource.data.userId == request.auth.uid || resource.data.closed == true;
+      allow create, update: if isActive() && request.resource.data.userId == request.auth.uid && request.resource.data.locked != true;
+      allow delete: if isAdmin();
+    }
+    match /predictionItems/{itemId} {
+      allow read: if signedIn();
+      allow write: if isActive() && request.resource.data.userId == request.auth.uid;
+    }
+
+    match /seasonPredictions/{predictionId} {
+      allow read: if isAdmin() || resource.data.userId == request.auth.uid || resource.data.closed == true;
+      allow create, update: if isActive() && request.resource.data.userId == request.auth.uid && request.resource.data.locked != true;
+      allow delete: if isAdmin();
+    }
+    match /seasonPredictionItems/{itemId} { allow read: if signedIn(); allow write: if isActive() && request.resource.data.userId == request.auth.uid; }
+    match /roundScores/{scoreId} { allow read: if signedIn(); allow write: if isAdmin(); }
+    match /seasonScores/{scoreId} { allow read: if signedIn(); allow write: if isAdmin(); }
+    match /standings/{standingId} { allow read: if signedIn(); allow write: if isAdmin(); }
+    match /moneyWinnings/{winningId} { allow read: if isOwner(winningId) || isAdmin(); allow write: if isAdmin(); }
+    match /tieBreakResolutions/{resolutionId} { allow read, write: if isAdmin(); }
+    match /auditLogs/{logId} { allow read, write: if isAdmin(); }
+  }
+}
