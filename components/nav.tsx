@@ -1,0 +1,3 @@
+import Link from 'next/link';
+const links=[['/','Jornada'],['/clasificacion','Clasificación'],['/tablas','Tablas'],['/instrucciones','Instrucciones'],['/admin','Admin']];
+export function Nav(){return <header className="sticky top-0 z-10 border-b bg-white/90 backdrop-blur"><nav className="mx-auto flex max-w-6xl flex-wrap items-center gap-2 px-4 py-3"><Link href="/" className="mr-auto text-lg font-black text-brand-700">Quiniela Familiar 26/27</Link>{links.map(([href,label])=><Link key={href} href={href} className="rounded-full px-3 py-1 text-sm font-semibold text-slate-700 hover:bg-slate-100">{label}</Link>)}</nav></header>}

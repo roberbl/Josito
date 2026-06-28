@@ -1,0 +1,4 @@
+import type { Match, Participant } from './types';
+export const participants:Participant[]=Array.from({length:12},(_,i)=>({id:`p${i+1}`,display_name:['José','Ana','Luis','Marta','Pablo','Laura','Diego','Sofía','Javi','Carmen','Raúl','Elena'][i],team_name:`Equipo ${1+Math.floor(i/3)}`,status:i<8?'activo':'eliminado',money_won:i===0?25:0,copitas:i===0?1:0}));
+export const matches:Match[]=Array.from({length:14},(_,i)=>({id:`m${i+1}`,order:i+1,competition:i%2?'LaLiga Hypermotion':'LaLiga EA Sports',home_team:`Local ${i+1}`,away_team:`Visitante ${i+1}`,starts_at:'2026-08-22T18:00:00Z',division:i%2?'segunda':'primera',is_pleno:i===13,result:(['1','X','2'] as const)[i%3],pleno_score:i===13?'2-1':undefined}));
+export const round={number:1,name:'Jornada inaugural',status:'published',published_at:'2026-08-15T12:00:00Z',deadline_at:'2026-08-21T20:00:00Z'};
