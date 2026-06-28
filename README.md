@@ -106,3 +106,24 @@ Ese error aparece cuando `NEXT_PUBLIC_FIREBASE_API_KEY` no está configurada, si
 2. Copia `apiKey`, `authDomain`, `projectId`, `storageBucket`, `messagingSenderId` y `appId` en `.env.local` usando los nombres `NEXT_PUBLIC_FIREBASE_*`.
 3. Reinicia el servidor local con `npm run dev`; Next.js no recarga variables de entorno ya arrancadas.
 4. Comprueba que Email/Password está activado en Authentication > Sign-in method.
+
+## Entrar como administrador y aceptar cuentas
+
+La primera cuenta admin se activa manualmente desde Firebase Console porque, por seguridad, nadie puede hacerse admin desde la web.
+
+1. Regístrate en `/registro` con tu email.
+2. Abre Firebase Console > Firestore Database > colección `users`.
+3. Busca el documento cuyo campo `email` sea tu email.
+4. Cambia estos campos:
+
+```json
+{
+  "role": "admin",
+  "participantStatus": "active"
+}
+```
+
+5. Cierra sesión y vuelve a entrar en `/login`.
+6. Verás el acceso al panel `Admin` en la navegación.
+7. Entra en `/admin/usuarios` para aceptar cuentas nuevas cambiando `participantStatus` de `pending` a `active`.
+8. Si quieres bloquear a alguien, cambia `participantStatus` a `blocked`.
