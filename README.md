@@ -127,3 +127,12 @@ La primera cuenta admin se activa manualmente desde Firebase Console porque, por
 6. Verás el acceso al panel `Admin` en la navegación.
 7. Entra en `/admin/usuarios` para aceptar cuentas nuevas cambiando `participantStatus` de `pending` a `active`.
 8. Si quieres bloquear a alguien, cambia `participantStatus` a `blocked`.
+
+## Datos reales en la pantalla principal
+
+La pantalla principal no usa usuarios ni partidos de ejemplo. Lee `users` y `matches` desde Firestore:
+
+- Solo aparecen usuarios con `participantStatus = "active"`.
+- Si no hay documentos en `matches`, la jornada se muestra vacía.
+- Los partidos se crean desde `Admin > Añadir partido a la jornada`.
+- Un partido `normal` se muestra como 1X2; un partido `pleno` se muestra como resultado exacto.

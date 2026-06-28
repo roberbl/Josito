@@ -1,6 +1,5 @@
 import { requireAdmin, profileFromFirestore } from '@/lib/auth';
 import { firestoreRest } from '@/lib/firebase';
-import { demoUsers as demoFallbackUsers, teams as demoTeams } from '@/lib/demo-data';
 import { updateUserAction } from './actions';
 import type { Profile, Team } from '@/lib/types';
 
@@ -14,7 +13,7 @@ async function loadUsers() {
   ]);
   const normalized = users?.documents?.map((doc) => profileFromFirestore(doc)).filter(Boolean) as Profile[] | undefined;
   const normalizedTeams = teams?.documents?.map((doc) => ({ id: doc.name?.split('/').pop() ?? '', name: doc.fields?.name?.stringValue ?? 'Equipo', color: doc.fields?.color?.stringValue })) as Team[] | undefined;
-  return { users: normalized?.length ? normalized : demoFallbackUsers, teams: normalizedTeams?.length ? normalizedTeams : demoTeams };
+  return { users: normalized ?? [], teams: normalizedTeams ?? [] };
 }
 
 export default async function AdminUsuarios({ searchParams }: { searchParams: Promise<{ q?: string; role?: string; status?: string; team?: string }> }) {
